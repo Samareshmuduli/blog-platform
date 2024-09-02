@@ -7,7 +7,7 @@ const {check,validationResult} =require("express-validator")
  * @param {*} res 
  */
 exports.createPost = async (req, res) => {
-    console.log(req.user)
+    // console.log(req.user)
     const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -57,9 +57,12 @@ exports.getPost = async (req, res) => {
  * @returns 
  */
 exports.getUserPost = async (req, res) => {
+
+    // console.log("req",req.params)
     try {
         const post = await Post.find({author:req.params.id});
         if (post==[]) return res.status(404).json({ message: 'Posts are not found' }); 
+        // console.log(post)
 
         res.status(200).json({
             message: "Posts retrieved successfully",
@@ -75,13 +78,17 @@ exports.getUserPost = async (req, res) => {
  * @param {*} res 
  */
 exports.getAllPosts = async (req, res) => {
+// console.log(' req recieved on get all posts:', );
     try {
+        // console.log(req.user)
         const posts = await Post.find();
-        res.status(200).json({
+        // console.log('posts------ :', posts);
+        res.status(200).send({
             message: "Blog posts retrieved successfully",
             Blogs: posts
         });
     } catch (err) {
+    // console.log('err ---------:', err);
         res.status(500).json({ message: err.message }); 
     }
 };
@@ -118,6 +125,7 @@ exports.updatePost = async (req, res) => {
  */
 exports.deletePost = async (req, res) => {
     try {
+        // console.log(req.params)
         const post = await Post.findById(req.params.id);
         if (!post) return res.status(404).json({ message: 'Post not found' }); 
         if(!(post.author==req.user._id))  res.status(404).json({ message: 'Only author can update this post' });

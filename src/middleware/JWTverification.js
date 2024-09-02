@@ -8,7 +8,7 @@ const verify = (req, res, next) => {
 
         // Attach the payload to the request object
         req.user = {_id: payload.id};
-
+        // console.log("middleware user ID",req.user)
         next();
     } catch (error) {
        

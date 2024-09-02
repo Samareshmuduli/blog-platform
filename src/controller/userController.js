@@ -9,6 +9,7 @@ const {check,validationResult} =require("express-validator")
  * @returns 
  */
 exports.register = async (req, res) => {
+  // console.log(req.body);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -25,15 +26,15 @@ exports.register = async (req, res) => {
     if (existingUsername) {
       return res.status(409).json({ message: 'uaername already registered' }); 
     }
-
+    
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({
+    const user = new User ({
       username,
       email,
       password: hashedPassword,
     });
-
+    // console.log(user);
     const newUser = await user.save();
     res.status(201).json(newUser); // Created
   } catch (err) {
@@ -67,10 +68,11 @@ exports.login = async (req, res) => {
     if (!match) {
       return res.status(401).json({ message: 'Invalid password' }); 
     }
-
+    // console.log(user)
     // Create a JWT token
     const token = jwt.sign({ id: user._id }, "Xty139@qt", { expiresIn: '1d' });
-    res.status(200).json({ message: 'Logged in successfully', access_token: token }); 
+    // console.log()
+    res.status(200).json({ message: 'Logged in successfully', access_token: token ,id: user._id,username:user.username}); 
   } catch (err) {
     res.status(500).json({ message: err.message }); 
   }
